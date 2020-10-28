@@ -1,0 +1,7 @@
+---
+name: opa
+
+dependencies:
+
+files:
+- opa/opa_linux_amd64

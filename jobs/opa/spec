@@ -1,0 +1,41 @@
+---
+name: opa
+
+templates:
+  bpm.yml.erb: config/bpm.yml
+  policy.rego.erb: config/policy.rego
+
+packages:
+- opa
+
+properties:
+  addr:
+    description: Listening address for the server - `--addr`
+    default: ":8181"
+  authentication:
+    description: Authentication scheme - `--authentication`
+    default: "off"
+  authorization:
+    description: Authorization scheme - `--authorization`
+    default: "off"
+  format:
+    description: Shell output format - `--format`
+    default: "pretty"
+  log-format:
+    description: Log format - `--log-format`
+    default: "text"
+  log-level:
+    description: Log level - `--log-level`
+    default: "info"
+  max-errors:
+    description: The number of errors to allow before compilation fails early - `--max-errors`
+    default: 10
+  policy:
+    description: The rego policy to apply
+  server-diagnostics-buffer-size:
+    description: The size of the server's diagnostics buffer
+    default: 10
+  tls.cert:
+    description: TLS certificate
+  tls.private_key:
+    description: TLS private key

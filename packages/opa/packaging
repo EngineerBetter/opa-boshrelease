@@ -1,0 +1,4 @@
+set -e
+
+cp -a opa/opa_linux_amd64 "${BOSH_INSTALL_TARGET:?}/opa"
+chmod a+x "${BOSH_INSTALL_TARGET:?}/opa"
