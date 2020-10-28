@@ -125,7 +125,7 @@ jobs:
       trigger: true
       params:
         globs:
-        - opa_linux_amd
+        - opa_linux_amd64
     - get: pcfops-image
   - task: update-opa-blob
     file: opa-boshrelease/ci/tasks/update-opa-blob.yml
