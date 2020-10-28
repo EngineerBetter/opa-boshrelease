@@ -1,0 +1,8 @@
+name: opa-boshrelease
+
+blobstore:
+  provider: s3
+  options:
+    bucket_name: opa-blobstore
+    region: eu-west-1
+    endpoint: https://s3-eu-west-1.amazonaws.com

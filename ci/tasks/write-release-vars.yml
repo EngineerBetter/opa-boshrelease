@@ -1,0 +1,13 @@
+---
+platform: linux
+
+inputs:
+- name: opa-boshrelease
+- name: version
+- name: final-release
+
+outputs:
+- name: release-vars
+
+run:
+  path: opa-boshrelease/ci/tasks/write-release-vars.sh

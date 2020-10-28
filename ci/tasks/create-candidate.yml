@@ -1,0 +1,11 @@
+---
+platform: linux
+
+inputs:
+  - name: opa-boshrelease
+
+outputs:
+  - name: release
+
+run:
+  path: opa-boshrelease/ci/tasks/create-candidate.sh

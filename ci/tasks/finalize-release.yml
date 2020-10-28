@@ -1,0 +1,17 @@
+---
+platform: linux
+
+inputs:
+  - name: opa-boshrelease
+  - name: final-release
+  - name: version
+
+outputs:
+  - name: final-opa-boshrelease
+
+params:
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
+
+run:
+  path: opa-boshrelease/ci/tasks/finalize-release.sh

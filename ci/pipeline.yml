@@ -1,0 +1,206 @@
+---
+resource_types:
+- name: terraform
+  type: registry-image
+  source:
+    repository: ljfranklin/terraform-resource
+    tag: latest
+
+resources:
+- name: opa-boshrelease
+  type: git
+  source:
+    uri: git@github.com:EngineerBetter/opa-boshrelease.git
+    branch: master
+    private_key: ((github_private_key))
+    ignore_paths:
+    - .final_builds/
+    - releases/
+    - README.md
+
+- name: opa-boshrelease-push
+  type: git
+  source:
+    uri: git@github.com:EngineerBetter/opa-boshrelease.git
+    branch: master
+    private_key: ((github_private_key))
+
+- name: opa-github-release
+  type: github-release
+  source:
+    owner: EngineerBetter
+    repository: opa-boshrelease
+    access_token: ((github_access_token))
+
+- name: version
+  type: semver
+  source:
+    key: version
+    << : &candidate-s3-creds
+      bucket: opa-boshreleases
+      access_key_id: ((concourse_ci_s3_access_key))
+      secret_access_key: ((concourse_ci_s3_secret_key))
+      region_name: eu-west-1
+
+- name: candidate-release
+  type: s3
+  source:
+    versioned_file: "opa-dev-release.tgz"
+    << : *candidate-s3-creds
+
+- name: final-release
+  type: s3
+  source:
+    regexp: "opa-final-release-(.*).tgz"
+    << : *candidate-s3-creds
+
+- name: ci-tf
+  type: terraform
+  source:
+    terraform_source: opa-boshrelease/ci/tf/
+    backend_type: s3
+    backend_config:
+      bucket: opa-boshrelease-ci
+      key: terraform/terraform.tfstate
+      access_key: ((concourse_ci_s3_access_key))
+      secret_key: ((concourse_ci_s3_secret_key))
+      region: eu-west-1
+      encrypt: true
+    env:
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+      AWS_DEFAULT_REGION: eu-west-1
+
+- name: pcfops-image
+  type: registry-image
+  source:
+    repository: engineerbetter/pcf-ops
+    tag: latest
+
+jobs:
+- name: set-pipeline
+  serial: true
+  plan:
+  - get: opa-boshrelease
+    trigger: true
+  - set_pipeline: self
+    file: opa-boshrelease/ci/pipeline.yml
+
+- name: create-buckets
+  serial: true
+  plan:
+  - in_parallel:
+    - get: opa-boshrelease
+      trigger: true
+      passed:
+      - set-pipeline
+    - get: pcfops-image
+  - task: create-state-bucket
+    file: opa-boshrelease/ci/tasks/create-bucket.yml
+    image: pcfops-image
+    params:
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+      AWS_DEFAULT_REGION: eu-west-1
+      BUCKET: opa-boshrelease-ci
+  - put: ci-tf
+    params:
+      env_name: fluent
+
+- name: create-release
+  serial: true
+  plan:
+  - in_parallel:
+    - get: opa-boshrelease
+      trigger: true
+      passed:
+      - create-buckets
+    - get: pcfops-image
+  - task: create
+    file: opa-boshrelease/ci/tasks/create-candidate.yml
+    image: pcfops-image
+  - put: candidate-release
+    params:
+      file: "release/opa-dev-release.tgz"
+      acl: public-read
+
+- name: create-final-release
+  serial: true
+  serial_groups:
+    - version
+  plan:
+  - in_parallel:
+    - get: opa-boshrelease
+      passed:
+      - create-release
+      trigger: true
+    - get: version
+      params:
+        bump: patch
+    - get: pcfops-image
+  - task: create-final-release
+    file: opa-boshrelease/ci/tasks/create-final.yml
+    image: pcfops-image
+    params:
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+  - put: final-release
+    params:
+      file: final-release/opa-final-release-*.tgz
+      acl: public-read
+
+- name: finalize-release
+  serial: true
+  serial_groups:
+    - version
+  plan:
+  - in_parallel:
+    - get: opa-boshrelease
+      passed:
+      - create-final-release
+      trigger: true
+    - get: final-release
+      passed:
+      - create-final-release
+      trigger: true
+    - get: version
+      passed:
+      - create-final-release
+      params:
+        bump: patch
+    - get: pcfops-image
+  - task: finalize-release
+    file: opa-boshrelease/ci/tasks/finalize-release.yml
+    image: pcfops-image
+    params:
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+  - put: opa-boshrelease-push
+    params:
+      rebase: true
+      repository: final-opa-boshrelease
+  - task: write-release-vars
+    file: opa-boshrelease-push/ci/tasks/write-release-vars.yml
+    image: pcfops-image
+    input_mapping:
+      opa-boshrelease: opa-boshrelease-push
+  - put: opa-github-release
+    params:
+      name: release-vars/name
+      commitish: release-vars/commit
+      body: release-vars/body
+      tag: version/version
+      globs:
+      - final-release/opa-final-release-*.tgz
+  - put: version
+    params:
+      file: version/version
+
+- name: bump-minor
+  serial: true
+  serial_groups:
+    - version
+  plan:
+    - put: version
+      params:
+        bump: minor
