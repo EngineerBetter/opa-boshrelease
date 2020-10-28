@@ -32,6 +32,13 @@ resources:
     repository: opa-boshrelease
     access_token: ((github_access_token))
 
+- name: opa-binary
+  type: github-release
+  source:
+    owner: open-policy-agent
+    repository: opa
+    access_token: ((github_access_token))
+
 - name: version
   type: semver
   source:
@@ -106,6 +113,30 @@ jobs:
   - put: ci-tf
     params:
       env_name: fluent
+
+- name: update-blobs
+  serial: true
+  plan:
+  - in_parallel:
+    - get: opa-boshrelease
+      passed:
+      - create-buckets
+    - get: opa-binary
+      trigger: true
+      params:
+        globs:
+        - opa_linux_amd
+    - get: pcfops-image
+  - task: update-opa-blob
+    file: opa-boshrelease/ci/tasks/update-opa-blob.yml
+    image: pcfops-image
+    params:
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+  - put: opa-boshrelease-push
+    params:
+      rebase: true
+      repository: opa-boshrelease
 
 - name: create-release
   serial: true
