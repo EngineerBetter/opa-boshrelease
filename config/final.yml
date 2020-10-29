@@ -1,4 +1,4 @@
-name: opa-boshrelease
+name: opa
 
 blobstore:
   provider: s3
