@@ -147,6 +147,8 @@ jobs:
       passed:
       - create-buckets
     - get: pcfops-image
+  - task: test_templating
+    file: opa-boshrelease/ci/tasks/test_templating.yml
   - task: create
     file: opa-boshrelease/ci/tasks/create-candidate.yml
     image: pcfops-image
