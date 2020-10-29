@@ -1,5 +1,5 @@
 check process opa
   with pidfile /var/vcap/sys/run/bpm/opa/opa.pid
   start program "/var/vcap/jobs/bpm/bin/bpm start opa"
-  stop program "/var/vcap/jobs/bpm/bin/bpm start opa"
+  stop program "/var/vcap/jobs/bpm/bin/bpm stop opa"
   group vcap
