@@ -9,33 +9,31 @@ packages:
 - opa
 
 properties:
-  addr:
+  opa_addr:
     description: Listening address for the server - `--addr`
     default: ":8181"
-  authentication:
+  opa_authentication:
     description: Authentication scheme - `--authentication`
     default: "off"
-  authorization:
+  opa_authorization:
     description: Authorization scheme - `--authorization`
     default: "off"
-  format:
+  opa_format:
     description: Shell output format - `--format`
     default: "pretty"
-  log-format:
+  opa_log-format:
     description: Log format - `--log-format`
     default: "text"
-  log-level:
+  opa_log-level:
     description: Log level - `--log-level`
     default: "info"
-  max-errors:
+  opa_max-errors:
     description: The number of errors to allow before compilation fails early - `--max-errors`
     default: 10
-  policy:
+  opa_policy:
     description: The rego policy to apply
-  server-diagnostics-buffer-size:
-    description: The size of the server's diagnostics buffer
-    default: 10
-  tls.cert:
-    description: TLS certificate
-  tls.private_key:
-    description: TLS private key
+  opa_tls:
+    cert:
+      description: TLS certificate
+    private_key:
+      description: TLS private key
