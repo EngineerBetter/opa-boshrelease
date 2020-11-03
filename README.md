@@ -10,9 +10,9 @@ This release was designed for the purpose of integrating with Concourse but ther
 releases:
 ...
 - name:    opa
-  version: 0.0.1
-  url:     https://github.com/EngineerBetter/opa-boshrelease/releases/download/0.0.1/opa-final-release-0.0.1.tgz
-  sha1:    d37a19327d5edf162a7caa9fb3c34fdd4bed76cd
+  version: 0.0.2
+  url:     https://github.com/EngineerBetter/opa-boshrelease/releases/download/0.0.2/opa-final-release-0.0.2.tgz
+  sha1:    a92e3e0b0b280c5a334e71d14e8d504d5e062083
 
 jobs:
 - name: web
