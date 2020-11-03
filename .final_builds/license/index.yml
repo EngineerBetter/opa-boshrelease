@@ -1,6 +1,0 @@
-builds:
-  605a808b20feb29add35842bbdde04701192a93e02475a8565ffc3a9dcec28cf:
-    version: 605a808b20feb29add35842bbdde04701192a93e02475a8565ffc3a9dcec28cf
-    blobstore_id: 29cff9e8-d96c-44ad-48ee-4c08a7e662bd
-    sha1: sha256:e9830bbda0ed0044cc7f60f6b2117d0d309463b487643717a81ba45f6dbaf3b9
-format-version: "2"
