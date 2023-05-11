@@ -4,6 +4,8 @@ resource_types:
   type: registry-image
   source:
     repository: ljfranklin/terraform-resource
+    username: ((dockerhub_user))
+    password: ((dockerhub_password))
     tag: latest
 
 resources:
