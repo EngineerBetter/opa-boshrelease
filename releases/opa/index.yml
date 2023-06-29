@@ -103,6 +103,8 @@ builds:
     version: 0.0.48
   ecf4710c-3483-4565-41a7-11d5c65ea1e1:
     version: 0.0.35
+  f60e1630-9adb-4709-5806-e8e8dc2f5f9d:
+    version: 0.0.54
   ffa87455-61d9-44af-7aa8-a191cdbd8e22:
     version: 0.0.9
 format-version: "2"
