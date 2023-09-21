@@ -1,0 +1,21 @@
+name: opa
+version: 0.0.56
+commit_hash: 5b43529
+uncommitted_changes: false
+jobs:
+- name: opa
+  version: c493bfc4987cb99efbda6abb68064a05f9519c0da3e98fbed2c41643d35bfdb2
+  fingerprint: c493bfc4987cb99efbda6abb68064a05f9519c0da3e98fbed2c41643d35bfdb2
+  sha1: sha256:85e9e5725bd8deb191f81346d4e34894f32a5c15f5971de673edfa2fe33032ac
+  packages:
+  - opa
+packages:
+- name: opa
+  version: 9e2ab75f96506b87c6c954ba8b7dbf65cb4ba721d179044c7fa2abe2a762cc2e
+  fingerprint: 9e2ab75f96506b87c6c954ba8b7dbf65cb4ba721d179044c7fa2abe2a762cc2e
+  sha1: sha256:137c8aca52287a8bbce480f86a666051d3c840538ad3d401f63349ccac4d7ecb
+  dependencies: []
+license:
+  version: 605a808b20feb29add35842bbdde04701192a93e02475a8565ffc3a9dcec28cf
+  fingerprint: 605a808b20feb29add35842bbdde04701192a93e02475a8565ffc3a9dcec28cf
+  sha1: sha256:e9830bbda0ed0044cc7f60f6b2117d0d309463b487643717a81ba45f6dbaf3b9
